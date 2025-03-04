@@ -1,8 +1,5 @@
 package com.auth.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -14,12 +11,9 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -47,30 +41,30 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
+    public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder());
-        provider.setUserDetailsService(userDetailsService());
+        provider.setUserDetailsService(userDetailsService);
         return provider;
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        List<UserDetails> userDetailsList = new ArrayList<>();
+    // @Bean
+    // public UserDetailsService userDetailsService() {
+    // List<UserDetails> userDetailsList = new ArrayList<>();
 
-        userDetailsList.add(User.withUsername("dmx")
-                .password("123")
-                .roles("ADMIN")
-                .authorities("READ", "CREATE")
-                .build());
-        userDetailsList.add(User.withUsername("dmz")
-                .password("789")
-                .roles("USER")
-                .authorities("READ")
-                .build());
+    // userDetailsList.add(User.withUsername("dmx")
+    // .password("123")
+    // .roles("ADMIN")
+    // .authorities("READ", "CREATE")
+    // .build());
+    // userDetailsList.add(User.withUsername("dmz")
+    // .password("789")
+    // .roles("USER")
+    // .authorities("READ")
+    // .build());
 
-        return new InMemoryUserDetailsManager(userDetailsList);
-    }
+    // return new InMemoryUserDetailsManager(userDetailsList);
+    // }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
