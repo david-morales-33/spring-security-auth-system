@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -27,8 +28,10 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(http -> {
-                    http.requestMatchers(HttpMethod.GET, "/test/hello").permitAll();
-                    http.requestMatchers(HttpMethod.GET, "/test/hello-secured").hasAnyAuthority("CREATE");
+                    http.requestMatchers(HttpMethod.GET, "/auth/test").permitAll();
+                    http.requestMatchers(HttpMethod.GET, "/auth/get").hasAnyAuthority("READ");
+                    http.requestMatchers(HttpMethod.POST, "/auth/post").hasAnyAuthority("CREATE");
+                    http.requestMatchers(HttpMethod.PUT, "/auth/put").hasAnyAuthority("UPDATE");
                     http.anyRequest().denyAll();
                 })
                 .build();
@@ -48,27 +51,8 @@ public class SecurityConfig {
         return provider;
     }
 
-    // @Bean
-    // public UserDetailsService userDetailsService() {
-    // List<UserDetails> userDetailsList = new ArrayList<>();
-
-    // userDetailsList.add(User.withUsername("dmx")
-    // .password("123")
-    // .roles("ADMIN")
-    // .authorities("READ", "CREATE")
-    // .build());
-    // userDetailsList.add(User.withUsername("dmz")
-    // .password("789")
-    // .roles("USER")
-    // .authorities("READ")
-    // .build());
-
-    // return new InMemoryUserDetailsManager(userDetailsList);
-    // }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
-
 }
