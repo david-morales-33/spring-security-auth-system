@@ -35,10 +35,13 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(http -> {
-                    http.requestMatchers(HttpMethod.GET, "/auth/test").permitAll();
-                    http.requestMatchers(HttpMethod.GET, "/auth/get").hasAnyAuthority("READ");
-                    http.requestMatchers(HttpMethod.POST, "/auth/post").hasAnyAuthority("CREATE");
-                    http.requestMatchers(HttpMethod.PUT, "/auth/put").hasAnyAuthority("UPDATE");
+                    http.requestMatchers(HttpMethod.POST, "/auth/log-in").permitAll();
+                    http.requestMatchers(HttpMethod.POST, "/auth/sign-up").permitAll();
+                    
+                    http.requestMatchers(HttpMethod.GET, "/test").permitAll();
+                    http.requestMatchers(HttpMethod.GET, "/test/get").hasAnyAuthority("READ");
+                    http.requestMatchers(HttpMethod.POST, "/test/post").hasAnyAuthority("CREATE");
+                    http.requestMatchers(HttpMethod.PUT, "/test/put").hasAnyAuthority("UPDATE");
                     http.anyRequest().denyAll();
                 })
                 .addFilterBefore(new JwtTokenValidator(jwtUtils), BasicAuthenticationFilter.class)
